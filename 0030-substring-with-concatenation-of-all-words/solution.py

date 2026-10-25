@@ -1,0 +1,51 @@
+from collections import Counter
+
+class Solution:
+    def findSubstring(self, s, words):
+        if not s or not words:
+            return []
+            
+        word_len = len(words[0])
+        word_count = len(words)
+        total_len = word_len * word_count
+        s_len = len(s)
+        
+        if s_len < total_len:
+            return []
+            
+        word_map = Counter(words)
+        result = []
+        
+        # Check all possible offsets from 0 up to word_len - 1
+        for i in range(word_len):
+            left = i
+            right = i
+            seen = Counter()
+            matched_count = 0
+            
+            while right + word_len <= s_len:
+                # Extract word chunk
+                w = s[right:right + word_len]
+                right += word_len
+                
+                if w in word_map:
+                    seen[w] += 1
+                    matched_count += 1
+                    
+                    # If this word appears more times than allowed, shrink from left
+                    while seen[w] > word_map[w]:
+                        left_w = s[left:left + word_len]
+                        seen[left_w] -= 1
+                        matched_count -= 1
+                        left += word_len
+                        
+                    # All words matched in the window
+                    if matched_count == word_count:
+                        result.append(left)
+                else:
+                    # Reset window if word is not in words
+                    seen.clear()
+                    matched_count = 0
+                    left = right
+                    
+        return result
