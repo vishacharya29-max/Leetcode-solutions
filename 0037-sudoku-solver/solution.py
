@@ -3,37 +3,47 @@ class Solution:
         """
         Do not return anything, modify board in-place instead.
         """
-        def isValid(r, c, ch):
-            box_row = 3 * (r // 3)
-            box_col = 3 * (c // 3)
-            
-            for i in range(9):
-                # Row check
-                if board[r][i] == ch:
-                    return False
-                # Column check
-                if board[i][c] == ch:
-                    return False
-                # 3x3 sub-box check
-                if board[box_row + i // 3][box_col + i % 3] == ch:
-                    return False
-            return True
+        rows = [set() for _ in range(9)]
+        cols = [set() for _ in range(9)]
+        boxes = [set() for _ in range(9)]
+        empty = []
 
-        def backtrack():
-            for r in range(9):
-                for c in range(9):
-                    if board[r][c] == '.':
-                        for ch in "123456789":
-                            if isValid(r, c, ch):
-                                board[r][c] = ch
-                                
-                                if backtrack():
-                                    return True
-                                
-                                # Backtrack
-                                board[r][c] = '.'
-                                
-                        return False
-            return True
+        # Step 1: Pre-populate sets and collect empty cell coordinates
+        for r in range(9):
+            for c in range(9):
+                val = board[r][c]
+                if val != '.':
+                    rows[r].add(val)
+                    cols[c].add(val)
+                    boxes[(r // 3) * 3 + (c // 3)].add(val)
+                else:
+                    empty.append((r, c))
 
-        backtrack()
+        # Step 2: Backtracking with O(1) set lookups
+        def backtrack(index):
+            if index == len(empty):
+                return True
+
+            r, c = empty[index]
+            b = (r // 3) * 3 + (c // 3)
+
+            for digit in "123456789":
+                if digit not in rows[r] and digit not in cols[c] and digit not in boxes[b]:
+                    # Place digit
+                    board[r][c] = digit
+                    rows[r].add(digit)
+                    cols[c].add(digit)
+                    boxes[b].add(digit)
+
+                    if backtrack(index + 1):
+                        return True
+
+                    # Backtrack
+                    board[r][c] = '.'
+                    rows[r].remove(digit)
+                    cols[c].remove(digit)
+                    boxes[b].remove(digit)
+
+            return False
+
+        backtrack(0)
