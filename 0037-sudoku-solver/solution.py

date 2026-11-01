@@ -1,0 +1,39 @@
+class Solution:
+    def solveSudoku(self, board):
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        def isValid(r, c, ch):
+            box_row = 3 * (r // 3)
+            box_col = 3 * (c // 3)
+            
+            for i in range(9):
+                # Row check
+                if board[r][i] == ch:
+                    return False
+                # Column check
+                if board[i][c] == ch:
+                    return False
+                # 3x3 sub-box check
+                if board[box_row + i // 3][box_col + i % 3] == ch:
+                    return False
+            return True
+
+        def backtrack():
+            for r in range(9):
+                for c in range(9):
+                    if board[r][c] == '.':
+                        for ch in "123456789":
+                            if isValid(r, c, ch):
+                                board[r][c] = ch
+                                
+                                if backtrack():
+                                    return True
+                                
+                                # Backtrack
+                                board[r][c] = '.'
+                                
+                        return False
+            return True
+
+        backtrack()
