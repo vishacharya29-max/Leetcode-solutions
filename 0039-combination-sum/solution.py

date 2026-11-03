@@ -1,0 +1,22 @@
+class Solution:
+    def combinationSum(self, candidates, target):
+        candidates.sort()
+        result = []
+        
+        def backtrack(start_idx, path, remaining):
+            if remaining == 0:
+                result.append(list(path))
+                return
+            
+            for i in range(start_idx, len(candidates)):
+                # If current candidate exceeds remaining sum, no subsequent candidate will fit
+                if candidates[i] > remaining:
+                    break
+                
+                path.append(candidates[i])
+                # Stay at index i because candidates can be reused
+                backtrack(i, path, remaining - candidates[i])
+                path.pop()
+                
+        backtrack(0, [], target)
+        return result
