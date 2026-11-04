@@ -1,0 +1,26 @@
+class Solution:
+    def combinationSum2(self, candidates, target):
+        candidates.sort()
+        result = []
+        
+        def backtrack(start_idx, path, remaining):
+            if remaining == 0:
+                result.append(list(path))
+                return
+            
+            for i in range(start_idx, len(candidates)):
+                # Prune branch if candidate exceeds remaining target
+                if candidates[i] > remaining:
+                    break
+                
+                # Skip duplicate elements at the same decision level
+                if i > start_idx and candidates[i] == candidates[i - 1]:
+                    continue
+                
+                path.append(candidates[i])
+                # Move to next index (i + 1) to use each candidate only once
+                backtrack(i + 1, path, remaining - candidates[i])
+                path.pop()
+                
+        backtrack(0, [], target)
+        return result
