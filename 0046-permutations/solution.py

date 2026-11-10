@@ -1,0 +1,20 @@
+class Solution:
+    def permute(self, nums):
+        result = []
+        n = len(nums)
+        
+        def backtrack(start):
+            if start == n:
+                result.append(nums[:])
+                return
+            
+            for i in range(start, n):
+                # Choose
+                nums[start], nums[i] = nums[i], nums[start]
+                # Explore
+                backtrack(start + 1)
+                # Unchoose (Backtrack)
+                nums[start], nums[i] = nums[i], nums[start]
+                
+        backtrack(0)
+        return result
