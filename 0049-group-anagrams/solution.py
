@@ -1,0 +1,16 @@
+from collections import defaultdict
+
+class Solution:
+    def groupAnagrams(self, strs):
+        anagram_map = defaultdict(list)
+        
+        for s in strs:
+            # 26-element frequency array for 'a' through 'z'
+            count = [0] * 26
+            for ch in s:
+                count[ord(ch) - ord('a')] += 1
+                
+            # Tuple is hashable and can be used as a dictionary key
+            anagram_map[tuple(count)].append(s)
+            
+        return list(anagram_map.values())
