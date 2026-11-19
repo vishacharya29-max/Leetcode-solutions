@@ -1,0 +1,17 @@
+class Solution:
+    def canJump(self, nums):
+        max_reach = 0
+        last_index = len(nums) - 1
+        
+        for i, jump in enumerate(nums):
+            # Current index is beyond the furthest reachable point
+            if i > max_reach:
+                return False
+                
+            max_reach = max(max_reach, i + jump)
+            
+            # Early exit once the last index can be reached
+            if max_reach >= last_index:
+                return True
+                
+        return True
