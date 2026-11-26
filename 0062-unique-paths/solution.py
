@@ -1,0 +1,11 @@
+class Solution:
+    def uniquePaths(self, m, n):
+        # Initialize the first row where every cell has exactly 1 path
+        row = [1] * n
+        
+        # Compute paths row by row
+        for _ in range(1, m):
+            for c in range(1, n):
+                row[c] += row[c - 1]
+                
+        return row[-1]
